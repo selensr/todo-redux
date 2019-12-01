@@ -5,16 +5,12 @@ import RemoveAll from "./RemoveAll";
 import "./App.css";
 import Filters from "./Filters";
 import {connect} from "react-redux";
+import {setFilter, setTodos, addTodo} from "./actionCreaters";
 
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {
-        _todos: [],
-        todos: []
-    };
-
     this.addTodo = this.addTodo.bind(this);
     this.removeTodo = this.removeTodo.bind(this);
     this.removeAllTodos = this.removeAllTodos.bind(this);
@@ -28,24 +24,22 @@ class App extends Component {
     if(localTodos){
       localTodos  = JSON.parse(localTodos);
     }
-    // Getirdiğimiz datayı state'e kaydediyoruz.
-    this.setState({
-      _todos: localTodos || [],
-      todos:  localTodos || []
-    })
+    this.props.addTodos(localTodos);
   }
 
-  addTodo(newTodo){
-      // Parametre olarak inputtan yeni eklenen değeri "newTodo" olarak alıyoruz.
-      // State'i mutate etmemek için rest operatörü ile bir kopyalama yapıp yeni todoyu concat ile ekliyoruz.
-      this.setState({
-        todos: [...this.state.todos].concat([
-            { content: newTodo, id: Math.random(), checked: false}
-        ])
-      }, () => {
-          // Todo ekrana eklendikten sonra bunu localstorage'a da ekliyoruz.
-        window.localStorage.setItem("todos", JSON.stringify(this.state.todos))
-      })
+  componentDidUpdate(prevProps, prevState, snapshot) {
+      ;debugger
+      if(JSON.stringify(prevProps.todos) !== JSON.stringify(this.props.todos)){
+          window.localStorage.setItem("todos", JSON.stringify(this.props.todos))
+      }
+  }
+
+    addTodo(newTodo){
+      this.props.addTodo({
+          content: newTodo,
+          id: Math.random(),
+          checked: false
+      });
   }
 
   removeTodo(id){
@@ -101,6 +95,7 @@ class App extends Component {
   }
 
   render(){
+      console.log("App props", this.props);
     return (
         <div className="App" id="todo">
             <div className="todo-list todo-list-add">
@@ -113,7 +108,7 @@ class App extends Component {
             </div>
             <TodoList
                 title="Todolist"
-                todos={this.filterTodos(this.state.todos, this.props.activeFilter)}
+                todos={this.filterTodos(this.props.todos, this.props.activeFilter)}
                 onTodoRemove={this.removeTodo}
                 onCheckedToggle={this.toggleCompleteStatus} />
         </div>
@@ -122,7 +117,13 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  activeFilter: state.activeFilter
+  activeFilter: state.activeFilter,
+  todos: state.todos
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = dispatch => ({
+    addTodos: (todos) => {dispatch(setTodos(todos))},
+    addTodo: (todo) => {dispatch(addTodo(todo))}
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
