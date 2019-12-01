@@ -5,14 +5,13 @@ import RemoveAll from "./RemoveAll";
 import "./App.css";
 import Filters from "./Filters";
 import {connect} from "react-redux";
-import {setFilter, setTodos, addTodo} from "./actionCreaters";
+import {setFilter, setTodos, addTodo} from "./actionCreators/actionCreaters";
 
 
 class App extends Component {
   constructor(props){
     super(props);
     this.addTodo = this.addTodo.bind(this);
-    this.removeTodo = this.removeTodo.bind(this);
     this.removeAllTodos = this.removeAllTodos.bind(this);
     this.toggleCompleteStatus = this.toggleCompleteStatus.bind(this);
   }
@@ -24,11 +23,10 @@ class App extends Component {
     if(localTodos){
       localTodos  = JSON.parse(localTodos);
     }
-    this.props.addTodos(localTodos);
+    this.props.addTodos(localTodos || []);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-      ;debugger
       if(JSON.stringify(prevProps.todos) !== JSON.stringify(this.props.todos)){
           window.localStorage.setItem("todos", JSON.stringify(this.props.todos))
       }
@@ -39,20 +37,6 @@ class App extends Component {
           content: newTodo,
           id: Math.random(),
           checked: false
-      });
-  }
-
-  removeTodo(id){
-      // Silinecek todo'nun idsini parametre olarak alıyoruz.
-      // State içerisindeki todolardan filter ile bu id'yi çıkarıyoruz.
-      // Mutate etmemk için filter kullandık, filter bize yeni bir array döner.
-      const newArray = this.state.todos.filter((todo) => {
-         return todo.id !== id;
-      });
-      this.setState({
-          todos: newArray
-      }, () => {
-          window.localStorage.setItem("todos", JSON.stringify(this.state.todos));
       });
   }
 
@@ -109,7 +93,6 @@ class App extends Component {
             <TodoList
                 title="Todolist"
                 todos={this.filterTodos(this.props.todos, this.props.activeFilter)}
-                onTodoRemove={this.removeTodo}
                 onCheckedToggle={this.toggleCompleteStatus} />
         </div>
     );

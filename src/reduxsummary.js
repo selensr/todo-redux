@@ -1,6 +1,6 @@
 // Store u tanımladık
 // reducer.js
-import {SET_FILTER} from "./actions";
+import {SET_FILTER} from "./actions/actions";
 const rootReducer = function (state = {
     activeFilter: "all"
 }, action) {
@@ -18,7 +18,7 @@ export default rootReducer
 // Store olusturduk
 // store.js
 import {createStore} from 'redux';
-import reducer from './reducer';
+import reducer from './reducer/reducer';
 
 const store = createStore(reducer);
 export default store;
@@ -29,7 +29,7 @@ export const SET_FILTER = 'SET_FILTER';
 
 // Actionu olusturduk
 // actioncreator.js
-import {SET_FILTER} from "./actions";
+import {SET_FILTER} from "./actions/actions";
 import {connect, Provider} from "react-redux";
 import App from "./App";
 import ReactDOM from "react-dom";

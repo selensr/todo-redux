@@ -1,4 +1,6 @@
 import React from 'react';
+import {connect} from "react-redux";
+import {setFilter, removeTodo} from "./actionCreators/actionCreaters";
 
 function Todo(props) {
     const {content, id, checked} = props;
@@ -11,9 +13,13 @@ function Todo(props) {
             {content}
             <span
                 className="remove-todo"
-                onClick={(e) => {e.stopPropagation();props.onTodoRemove(id)}}>X</span>
+                onClick={(e) => {e.stopPropagation();props.removeTodo(id)}}>X</span>
         </div>
     );
 }
 
-export default Todo;
+const mapDispatchToProps = dispatch => ({
+    removeTodo: (id) => {dispatch(removeTodo(id))}
+});
+
+export default connect(null, mapDispatchToProps)(Todo);

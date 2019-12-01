@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {setFilter} from "./actionCreaters";
+import {setFilter} from "./actionCreators/actionCreaters";
 
 const options = [
     {label: "Hepsi", labelKey: "all"},
