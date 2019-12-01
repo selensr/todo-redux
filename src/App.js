@@ -3,12 +3,15 @@ import TodoList from "./TodoList";
 import AddTodo from "./AddTodo";
 import RemoveAll from "./RemoveAll";
 import "./App.css";
+import Filters from "./Filters";
+import {connect} from "react-redux";
 
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+        _todos: [],
         todos: []
     };
 
@@ -19,6 +22,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+      console.log("GÜncel proplar", this.props);
     // Component oluştuktan sonra gerekli olan datayı localstoragedan geyiriyoruz.
     let localTodos = window.localStorage.getItem("todos");
     if(localTodos){
@@ -26,7 +30,8 @@ class App extends Component {
     }
     // Getirdiğimiz datayı state'e kaydediyoruz.
     this.setState({
-      todos: localTodos || []
+      _todos: localTodos || [],
+      todos:  localTodos || []
     })
   }
 
@@ -85,6 +90,16 @@ class App extends Component {
       });
   }
 
+  filterTodos = (todos, filterType) => {
+    if(filterType === "all"){
+        return todos;
+    }else if (filterType === "completed"){
+        return todos.filter((todo) => todo.checked);
+    }else{
+        return todos.filter((todo) => !todo.checked);
+    }
+  }
+
   render(){
     return (
         <div className="App" id="todo">
@@ -93,18 +108,12 @@ class App extends Component {
                 <div>
                     <AddTodo   onTodoAdd={this.addTodo} />
                     <RemoveAll onRemoveAll={this.removeAllTodos}/>
+                    <Filters />
                 </div>
             </div>
-
             <TodoList
-                title="Tamamlanmamış Todolar"
-                todos={[]}
-                onTodoRemove={this.removeTodo}
-                onCheckedToggle={this.toggleCompleteStatus} />
-
-            <TodoList
-                title="Tamamlanmış Todolar"
-                todos={[]}
+                title="Todolist"
+                todos={this.filterTodos(this.state.todos, this.props.activeFilter)}
                 onTodoRemove={this.removeTodo}
                 onCheckedToggle={this.toggleCompleteStatus} />
         </div>
@@ -112,4 +121,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  activeFilter: state.activeFilter
+});
+
+export default connect(mapStateToProps)(App);
