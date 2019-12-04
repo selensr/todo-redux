@@ -41,7 +41,7 @@ class AddTodo extends React.Component {
       inputVal: ""
     });
   }
-
+  // Boş Todo ekliyor önüne geçemedim henüz
   render() {
     return (
       <form onSubmit={this.addTodoEvent}>
