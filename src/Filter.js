@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setFilter } from "./actionCreators/actionCreators";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const options = [
-  { label: "Hepsi", labelKey: "all" },
-  { label: "Tamamlanmış", labelKey: "completed" },
-  { label: "Tamamlanmamış", labelKey: "uncompleted" }
+  { label: "All", labelKey: "all" },
+  { label: "Completed", labelKey: "completed" },
+  { label: "Uncompleted", labelKey: "uncompleted" }
 ];
 
 const Filters = styled.div`
@@ -31,13 +31,13 @@ const Filters = styled.div`
   &:last-child {
     background: rgba(236, 221, 86, 0.87);
   }
-`
+`;
 
 class Filter extends Component {
   render() {
     console.log(this.props);
     return (
-      <div className="filter-container" style={{ textAlign: "center"}}>
+      <div className="filter-container" style={{ textAlign: "center" }}>
         {options.map(option => {
           return (
             <Filters onClick={() => this.props.changeFilter(option.labelKey)}>
